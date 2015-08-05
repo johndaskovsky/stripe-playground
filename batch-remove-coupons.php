@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . '/init.php');
 
 require_once(dirname(__FILE__) . '/config.php');
 
-$increment = 5;
+$increment = 100;
 $count = 0;
 $continue = true;
 $starting_after = NULL;
@@ -20,7 +20,18 @@ while($continue) {
 
   foreach ($customers['data'] as $customer) {
     foreach ($customer['subscriptions']['data'] as $subscription) {
-        if( $subscription['discount']['coupon']['id'] == 'MKVVVFSC2QNJKX7XZNGQDIEAGUDZCZGORFJ') {
+      if( $subscription['discount']['coupon']['id'] == '4XTFJPTDS99') {
+        $count++;
+      }
+    }
+  }
+
+  echo $count . '<br>';
+
+  /*
+  foreach ($customers['data'] as $customer) {
+    foreach ($customer['subscriptions']['data'] as $subscription) {
+        if( $subscription['discount']['coupon']['id'] == '4XTFJPTDS99') {
           echo 'Customer: ' . $subscription['customer'] . '<br>';
           echo 'Subscription: ' . $subscription['id'] . '<br>';
           echo 'Discount: ' . $subscription['discount']['coupon']['id'] . '<br><br>';
@@ -29,6 +40,9 @@ while($continue) {
         }
     }
   }
+  */
 }
+
+echo $count . '<br>';
 
 
