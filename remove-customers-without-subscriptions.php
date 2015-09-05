@@ -20,12 +20,11 @@ while($continue) {
 
   foreach ($customers['data'] as $customer) {
     if ( count($customer['subscriptions']['data']) == 0 ) {
+      $count++;
       $cu = \Stripe\Customer::retrieve( $customer['id'] );
       $cu->delete();
     }
   }
-
 }
 
-
-
+echo $count;

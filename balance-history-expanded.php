@@ -31,37 +31,44 @@ $out = fopen('balance_history_expanded.csv', 'w');
 
 $increment = 100;
 $continue = true;
-$starting_after = NULL;
+$ending_before = 'txn_16U0xRGYjKzzi3FkTJGKL2Vo';
 
 while($continue) {
-  $transactionsJSON = \Stripe\BalanceTransaction::all(array("limit" => $increment, "starting_after" => $starting_after));
+  $transactionsJSON = \Stripe\BalanceTransaction::all(array("limit" => $increment, "ending_before" => $ending_before));
 
   $transactions = $transactionsJSON->__toArray(true);
 
   $continue = $transactions['has_more'];
 
-  $starting_after = end($transactions['data'])['id'];
+  $ending_before = current($transactions['data'])['id'];
 
   foreach ($transactions['data'] as $transaction) {
-    array_push($arr,
-      array(
-        $transaction['id'],
-        $transaction['source'],
-        $transaction['type'],
-        $transaction['amount']/100,
-        $transaction['net']/100,
-        $transaction['fee']/100,
-        gmdate("Y-m-d", $transaction['created']),
-        gmdate("Y-m-d", $transaction['available_on']),
-        $transaction['status'],
-        $transaction['description']
-        //$charge['metadata']['product_id'],
-        //$charge['metadata']['product_type'],
-        //$charge['metadata']['order_id'],
-        //$charge['metadata']['customer_name'],
-        //$charge['metadata']['customer_email']
-      )
-    );
+    if($transaction['type'] != 'transfer') {
+      $charge = NULL;
+
+      $chargeJSON = \Stripe\Charge::retrieve( $transaction['source'] );
+      $charge = $chargeJSON->__toArray(true);
+
+      array_push($arr,
+        array(
+          $transaction['id'],
+          $transaction['source'],
+          $transaction['type'],
+          $transaction['amount']/100,
+          $transaction['net']/100,
+          $transaction['fee']/100,
+          gmdate("Y-m-d H:i:s", $transaction['created']),
+          gmdate("Y-m-d H:i:s", $transaction['available_on']),
+          $transaction['status'],
+          $transaction['description'],
+          $charge['metadata']['product_id'],
+          $charge['metadata']['product_type'],
+          $charge['metadata']['order_id'],
+          $charge['metadata']['customer_name'],
+          $charge['metadata']['customer_email']
+        )
+      );
+    }
   }
 
 }

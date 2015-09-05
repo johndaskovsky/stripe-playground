@@ -22,27 +22,11 @@ while($continue) {
     foreach ($customer['subscriptions']['data'] as $subscription) {
       if( $subscription['discount']['coupon']['id'] == '4XTFJPTDS99') {
         $count++;
+        $cu = \Stripe\Customer::retrieve( $subscription['customer'] );
+        $cu->subscriptions->retrieve( $subscription['id'] )->deleteDiscount(); 
       }
     }
   }
-
-  echo $count . '<br>';
-
-  /*
-  foreach ($customers['data'] as $customer) {
-    foreach ($customer['subscriptions']['data'] as $subscription) {
-        if( $subscription['discount']['coupon']['id'] == '4XTFJPTDS99') {
-          echo 'Customer: ' . $subscription['customer'] . '<br>';
-          echo 'Subscription: ' . $subscription['id'] . '<br>';
-          echo 'Discount: ' . $subscription['discount']['coupon']['id'] . '<br><br>';
-          $cu = \Stripe\Customer::retrieve( $subscription['customer'] );
-          $cu->subscriptions->retrieve( $subscription['id'] )->deleteDiscount();  
-        }
-    }
-  }
-  */
 }
 
-echo $count . '<br>';
-
-
+echo $count;
