@@ -15,3 +15,4 @@ clover.xml
 
 # Ignore config file
 config.php
+balance_history_expanded.csv
